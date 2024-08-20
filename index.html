@@ -4,8 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script src="./index.js"></script>
+    <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./index.css" />
   </head>
-  <body></body>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <!-- up -->
+        <div class="up">
+          <!-- circles -->
+          <div class="circles">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <!-- name -->
+          <h3>TODO list</h3>
+          <span></span>
+        </div>
+
+        <form class="down">
+          <input type="text" placeholder="Add your objectives" />
+        </form>
+      </div>
+
+      <!-- Main List -->
+      <div class="main">
+        <div class="memo">
+          <!-- left -->
+          <div class="left">
+            <div class="circle"></div>
+            <div class="box">
+              <p>SAMPLE</p>
+              <small>2024 08 19 MON</small>
+            </div>
+          </div>
+          <!-- right -->
+          <div class="right">
+            <span id="pen">✏️</span>
+            <span id="trash">🚫</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
