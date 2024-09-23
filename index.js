@@ -8,10 +8,32 @@ let data = [];
 let colors = ["tomato", "gold", "limegreen"];
 
 function alt(e) {
-  console.log(e);
+  const memo = e.target.parentElement.parentElement;
+  const text = memo.innerText.split("\n")[0];
+  const form = document.createElement("form");
+  form.id = "updateForm";
+  const input = document.createElement("input");
+  memo.prepend(form);
+  form.prepend(input);
+  input.value = text;
+  input.focus();
+  form.addEventListener("submit", (e) => {
+    console.log(e);
+    e.preventDefault();
+    console.log(input.value);
+  });
 }
 function cancel(e) {
-  console.log(e);
+  const memo = e.target.parentElement.parentElement;
+  const NewTodos = [];
+  data.forEach((test) => {
+    if (test.id != memo.id) {
+      NewTodos.push(test);
+    }
+  });
+  memo.remove();
+  data = NewTodos;
+  localStorage.setItem("data", JSON.stringify(data));
 }
 
 function SelectColor() {
@@ -21,7 +43,20 @@ function SelectColor() {
     return colors[(data.length % 3) - 1];
   }
 }
-function paint(todo, time) {
+
+// this the form
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  // this is the content
+  const todo = newInput.value.trim();
+  const time = new Date();
+  if (todo === "") {
+    newInput.value = "";
+    return;
+  }
+
+  //creating new things
   // creating a new div
   const NewMemo = document.createElement("div");
   // this is for defining date
@@ -33,19 +68,19 @@ function paint(todo, time) {
   NewMemo.className = "memo";
   NewMemo.id = time.getTime();
   NewMemo.innerHTML = `
-          <!-- left -->
-          <div class="left">
-            <div class="circle"></div>
-            <div class="box">
-              <p>${todo}</p>
-              <small>${date}</small>
-            </div>
+        <!-- left -->
+        <div class="left">
+          <div class="circle"></div>
+          <div class="box">
+            <p>${todo}</p>
+            <small>${date}</small>
           </div>
-          <!-- right -->
-          <div class="right">
-            <span id="pen">✏️</span>
-            <span id="trash">🚫</span>
-          </div>`;
+        </div>
+        <!-- right -->
+        <div class="right">
+          <span id="pen">✏️</span>
+          <span id="trash">🚫</span>
+        </div>`;
   main.append(NewMemo);
 
   // defining pen and trash
@@ -60,36 +95,53 @@ function paint(todo, time) {
   NewMemo.firstElementChild.firstElementChild.style.backgroundColor =
     SelectColor();
   // finally saving the data
+
   localStorage.setItem("data", JSON.stringify(data));
-}
-
-// this the form
-form.addEventListener("submit", (e) => {
-  console.log(e);
-  e.preventDefault();
-
-  // this is the content
-  const todo = newInput.value.trim();
-  const time = new Date();
-  if (todo === "") {
-    newInput.value = "";
-    return;
-  }
-
-  //creating new things
-  paint(todo, time);
   newInput.value = "";
 });
 
-// function init() {
-//   if (localStorage.getItem("data") != null) {
-//     data = JSON.parse(localStorage.getItem("data"));
-//     console.log("working");
-//     data.forEach((datas) => {
-//       const todo = datas.content;
-//       const time = datas.time;
-//       paint(todo, time);
-//     });
-//   }
-// }
-// init();
+function paint(test) {
+  const NewMemo = document.createElement("div");
+  // this is for defining date
+
+  // making the html
+  NewMemo.className = "memo";
+  NewMemo.id = test.id;
+  NewMemo.innerHTML = `
+        <!-- left -->
+        <div class="left">
+          <div class="circle"></div>
+          <div class="box">
+            <p>${test.content}</p>
+            <small>${test.time}</small>
+          </div>
+        </div>
+        <!-- right -->
+        <div class="right">
+          <span id="pen">✏️</span>
+          <span id="trash">🚫</span>
+        </div>`;
+  main.append(NewMemo);
+
+  // defining pen and trash
+  const pen = NewMemo.lastElementChild.firstElementChild;
+  const trash = NewMemo.lastElementChild.lastElementChild;
+  pen.addEventListener("click", alt);
+  trash.addEventListener("click", cancel);
+  NewMemo.firstElementChild.firstElementChild.style.backgroundColor =
+    SelectColor();
+}
+
+function init() {
+  const datas = JSON.parse(localStorage.getItem("data"));
+  if (datas == null) {
+    console.log("empty");
+    return;
+  } else {
+    datas.forEach((test) => {
+      data.push(test);
+      paint(test);
+    });
+  }
+}
+init();
