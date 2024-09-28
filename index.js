@@ -9,6 +9,7 @@ let colors = ["tomato", "gold", "limegreen"];
 
 function alt(e) {
   const memo = e.target.parentElement.parentElement;
+  const p = memo.firstElementChild.lastElementChild.firstElementChild;
   const text = memo.innerText.split("\n")[0];
   const form = document.createElement("form");
   form.id = "updateForm";
@@ -20,7 +21,14 @@ function alt(e) {
   form.addEventListener("submit", (e) => {
     console.log(e);
     e.preventDefault();
-    console.log(input.value);
+    p.textContent = input.value;
+    form.remove();
+    data.forEach((test) => {
+      if (test.content == text) {
+        test.content = input.value;
+      }
+    });
+    localStorage.setItem("data", JSON.stringify(data));
   });
 }
 function cancel(e) {
